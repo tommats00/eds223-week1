@@ -1,0 +1,154 @@
+---
+title: "EDS 223: Week 1 Lab"
+author: "Tom Gibbens-Matsuyama"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+install.packages("sf") # vector data
+install.packages("stars") # raster data
+install.packages("tmap")# map making
+```
+
+```{r}
+library(sf) # for vector data (more soon!)
+library(stars) # for raster data (more soon!)
+library(tmap) # for static and interactive maps
+library(here)
+```
+
+```{r}
+# raster of global elevation
+world_elevation <- read_stars(here("data", "worldelevation.tif"))
+
+# country boundaries
+world_vector <- read_sf(here("data", "worldvector.gpkg"))
+
+#major cities
+world_cities <- read_sf(here("data", "worldcities.gpkg"))
+```
+
+```{r}
+# using tmap syntax is very similar to ggplot syntax
+tm_shape(world_elevation, bbox = c(-15, 35, 45, 65)) +
+  tm_raster() + 
+tm_shape(world_vector) +   # data set used in tm_shape
+  tm_borders()  +       
+  tm_shape(world_cities, is.master = TRUE) + # argument 'is.master' 
+  tm_dots()
+```
+
+```{r}
+tm_shape(world_elevation, bbox = c(-15, 35, 45, 65)) +
+  tm_raster() + 
+tm_shape(world_vector) +   # data set used in tm_shape
+  tm_borders()
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_polygons(col = "lightblue",
+              border.col = "black",
+              lwd = 0.5,
+              lty = "dashed")
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_borders(col = "red")
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_fill(col = "lightblue")
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_fill("CO2_emissions")
+```
+
+```{r}
+tm_shape(world_cities) +
+  tm_symbols() 
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_polygons("life_expectancy",
+              palette = c("yellow", "darkgreen"),
+              title = "Life Expectancy")
+```
+
+```{r}
+install.packages("viridisLite")
+library(viridisLite)
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_polygons("life_expectancy",
+              palette = viridis(8),
+              title = "Life Expectancy (years)")
+```
+
+```{r}
+tm_shape(world_vector) + 
+  tm_polygons() +
+  tm_shape(world_cities) +
+  tm_symbols(size = "pop2020",
+             legend.size.is.portrait = TRUE)
+```
+
+
+```{r}
+tm_shape(world_vector) +
+  tm_fill() +
+  tm_graticules()
+```
+
+```{r}
+# You can always change the layout of the map by changing the order of your layers! 
+
+tm_shape(world_vector) +
+  tm_graticules() +
+  tm_fill()
+```
+
+```{r}
+tm_shape(world_vector) +
+  tm_fill() +
+  tm_scale_bar() +
+  tm_compass(position = c("left", "top"))
+```
+
+
+```{r}
+tmap_mode("view") # creates an interactive viewing map
+
+tm_shape(world_vector) +
+  tm_fill(col = "wb_income_region",
+          palette = viridisLite:: plasma(5),
+          title = "Regional Income") +
+  tm_layout(bg.color = "grey95",
+            main.title = "Global income by country",
+            frame = FALSE)
+
+tmap_mode("plot") # this changes it back into a static map 
+```
+
+```{r}
+map1 <- tm_shape(world_vector) +
+  tm_fill(col = "wb_income_region",
+          palette = viridisLite:: plasma(5),
+          title = "Regional Income") +
+  tm_layout(bg.color = "grey95",
+            main.title = "Global income by country",
+            frame = FALSE)
+
+tmap_save(map1, here("tmap-example.png"))
+```
+
