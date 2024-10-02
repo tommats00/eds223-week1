@@ -1,0 +1,61 @@
+---
+title: "eds223_week1_discussion"
+author: "Tom Gibbens-Matsuyama"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+# Load Libraries
+
+```{r}
+library(here)
+library(tidyverse)
+library(stars)
+library(sf)
+library(tmap)
+```
+
+# Load Data
+
+```{r}
+ei_points <- sf::read_sf(here::here("data", "easter_island", "ei_points.gpkg"))
+volcanoes <- subset(ei_points, type == "volcano")
+ei_elev <- stars::read_stars(here::here("data", "easter_island", "ei_elev.tif"))
+ei_borders <- sf::read_sf(here::here("data", "easter_island", "ei_border.gpkg"))
+ei_roads <- sf::read_sf(here::here("data", "easter_island", "ei_roads.gpkg"))
+```
+
+# My Task
+
+1. Create a map of Easter Island
+2. Create a map of Easter Island and…
+
+…denote the island’s borders and continuous elevation
+…denote the island’s volcanoes and roads
+…play with the color palette and essential map elements
+
+3. Create an interactive map of Easter Island
+
+```{r}
+tmap_mode("view")
+
+tm_shape(ei_elev) +
+  tm_raster(title = "Elevation in Meters",
+            palette = c("lightgoldenrod", "darkgoldenrod")) +
+tm_shape(ei_borders) +
+  tm_borders(lwd = 2.5,
+             col = "black") +
+tm_shape(ei_roads) +
+  tm_lines(lwd = 1.5) +
+tm_shape(volcanoes) +
+  tm_dots(col = "blue", size = 0.85) +
+  tm_text("elevation", size = 0.4) +
+tm_layout(bg.color = "lightblue") +
+tm_scale_bar() +
+tm_compass()
+
+tmap_mode("plot")
+```
+

@@ -103,7 +103,6 @@ tm_shape(world_vector) +
              legend.size.is.portrait = TRUE)
 ```
 
-
 ```{r}
 tm_shape(world_vector) +
   tm_fill() +
@@ -124,7 +123,6 @@ tm_shape(world_vector) +
   tm_scale_bar() +
   tm_compass(position = c("left", "top"))
 ```
-
 
 ```{r}
 tmap_mode("view") # creates an interactive viewing map
@@ -151,4 +149,3 @@ map1 <- tm_shape(world_vector) +
 
 tmap_save(map1, here("tmap-example.png"))
 ```
-
